@@ -1,8 +1,10 @@
 import subprocess
 from pathlib import Path
 
+__all__ = ["to_hhmmss", "trim_video"]
 
-def _to_hhmmss(t: str) -> str:
+
+def to_hhmmss(t: str) -> str:
     """
     Accepts 'SS', 'MM:SS', or 'HH:MM:SS' and normalizes to HH:MM:SS.
     """
@@ -36,8 +38,8 @@ def trim_video(
     if not inp.exists():
         raise FileNotFoundError(inp)
 
-    ss = _to_hhmmss(start_time)
-    to = _to_hhmmss(end_time)
+    ss = to_hhmmss(start_time)
+    to = to_hhmmss(end_time)
 
     if output_path is None:
         out = inp.with_name(
