@@ -71,7 +71,14 @@ def trim_video(
     # Build ffmpeg command
     # -ss before -i is fast seek; -to sets absolute end time (not duration).
     # For copy mode: -c copy. For reencode: pick sane codecs (libx264/aac).
-    cmd = ["ffmpeg", "-y", "-ss", ss, "-to", to, "-i", str(inp)]
+    cmd = ["ffmpeg", "-y"]
+
+    # When burning subtitles, preserve original timestamps so subtitle times
+    # align with the original media timeline, then reset at output.
+    if burn_subtitles:
+        cmd += ["-copyts"]
+
+    cmd += ["-ss", ss, "-to", to, "-i", str(inp)]
 
     # Subtitles burn-in requires re-encoding with a video filter
     subtitle_filter: Optional[str] = None
@@ -90,6 +97,11 @@ def trim_video(
     else:
         cmd += ["-c", "copy"]
     cmd.append(str(out))
+
+    # Reset output timestamps to start from zero after using -copyts.
+    if burn_subtitles:
+        cmd[0:0]  # no-op to keep indexes stable
+        cmd += ["-start_at_zero", "1"]
 
     # Run
     subprocess.run(cmd, check=True)

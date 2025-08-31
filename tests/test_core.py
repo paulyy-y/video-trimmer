@@ -67,6 +67,9 @@ hi
     # Should include libx264 (reencode) and -vf subtitles
     assert "-c:v" in cmd and "libx264" in cmd
     assert "-vf" in cmd
+    # Should preserve timestamps and reset at output
+    assert "-copyts" in cmd
+    assert "-start_at_zero" in cmd
     # Verify filter references the sidecar file
     vf_idx = cmd.index("-vf")
     assert "subtitles=" in cmd[vf_idx + 1]
