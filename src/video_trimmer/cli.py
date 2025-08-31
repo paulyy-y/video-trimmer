@@ -77,11 +77,26 @@ def main():
         help="Re-encode the video for frame-accurate trimming.",
     )
     parser.add_argument(
+        "--burn-subtitles",
+        action="store_true",
+        help=(
+            "Burn-in subtitles if available (sidecar .srt/.ass/.vtt or embedded). "
+            "Forces re-encoding to apply the subtitle filter."
+        ),
+    )
+    parser.add_argument(
         "--upload-stream",
         action="store_true",
         help=(
             "After trimming, upload the result to Cloudflare Stream using env vars"
             " CLOUDFLARE_ACCOUNT_ID and CLOUDFLARE_STREAM_API_TOKEN."
+        ),
+    )
+    parser.add_argument(
+        "--upload-stream-only",
+        action="store_true",
+        help=(
+            "Upload to Cloudflare Stream and delete the local trimmed file on success."
         ),
     )
 
@@ -144,10 +159,11 @@ def main():
             start_time=args.start,
             end_time=args.end,
             reencode=args.reencode,
+            burn_subtitles=args.burn_subtitles,
         )
         print(f"Successfully trimmed video to {output_file}")
 
-        if args.upload_stream:
+        if args.upload_stream or args.upload_stream_only:
             print("Uploading to Cloudflare Stream...")
             try:
                 payload = upload_to_cloudflare_stream(
@@ -164,6 +180,12 @@ def main():
                     print(f"Upload complete. UID: {uid}")
                 else:
                     print("Upload complete.")
+                if args.upload_stream_only:
+                    try:
+                        os.remove(output_file)
+                        print("Local file deleted after upload.")
+                    except OSError as oe:
+                        print(f"Warning: could not delete local file: {oe}")
             except CloudflareStreamError as ue:
                 print(f"Upload failed: {ue}")
     except FileNotFoundError:

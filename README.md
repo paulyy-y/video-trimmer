@@ -40,6 +40,17 @@ mv dist/video-trimmer ~/.local/bin/
 video-trimmer -i input.mp4 -s 01:10 -e 02:25
 # or interactively (choose file via fuzzy finder)
 video-trimmer -s 1:10 -e 2:25
+
+# Burn-in subtitles (sidecar .srt/.ass/.vtt or embedded)
+video-trimmer -i input.mp4 -s 0:10 -e 0:25 --burn-subtitles
+
+# Upload to Cloudflare Stream (keep local file)
+export CLOUDFLARE_ACCOUNT_ID=acc
+export CLOUDFLARE_STREAM_API_TOKEN=token
+video-trimmer -i input.mp4 -s 0:10 -e 0:25 --upload-stream
+
+# Upload to Cloudflare Stream and delete local file after success
+video-trimmer -i input.mp4 -s 0:10 -e 0:25 --upload-stream-only
 ```
 
 If you omit `-o/--output`, the output name defaults to `name_trim_{start}-{end}{ext}`.
