@@ -1,0 +1,26 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "video-trimmer"
+version = "0.1.0"
+authors = [{ name = "User", email = "user@example.com" }]
+description = "A simple video trimmer using ffmpeg."
+readme = "README.md"
+requires-python = ">=3.8"
+classifiers = [
+  "Programming Language :: Python :: 3",
+  "License :: OSI Approved :: MIT License",
+  "Operating System :: OS Independent",
+]
+
+[project.scripts]
+video-trimmer = "video_trimmer.cli:main"
+
+[project.urls]
+"Homepage" = "https://github.com/example/video-trimmer"
+"Bug Tracker" = "https://github.com/example/video-trimmer/issues"
+
+[tool.setuptools.packages.find]
+where = ["src"]
