@@ -96,12 +96,12 @@ def trim_video(
             cmd += ["-vf", subtitle_filter]
     else:
         cmd += ["-c", "copy"]
-    cmd.append(str(out))
 
     # Reset output timestamps to start from zero after using -copyts.
     if burn_subtitles:
-        cmd[0:0]  # no-op to keep indexes stable
-        cmd += ["-start_at_zero", "1"]
+        cmd += ["-start_at_zero"]
+
+    cmd.append(str(out))
 
     # Run
     subprocess.run(cmd, check=True)
