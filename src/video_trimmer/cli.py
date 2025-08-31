@@ -57,13 +57,13 @@ def main():
         "-s",
         "--start",
         required=True,
-        help="The start time of the trim (in seconds or hh:mm:ss format).",
+        help="The start time of the trim (mm:ss or hh:mm:ss; seconds also allowed).",
     )
     parser.add_argument(
         "-e",
         "--end",
         required=True,
-        help="The end time of the trim (in seconds or hh:mm:ss format).",
+        help="The end time of the trim (mm:ss or hh:mm:ss; seconds also allowed).",
     )
     parser.add_argument(
         "-d",

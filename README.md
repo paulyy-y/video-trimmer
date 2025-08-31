@@ -37,9 +37,9 @@ mv dist/video-trimmer ~/.local/bin/
 
 ### Usage
 ```bash
-video-trimmer -i input.mp4 -s 10 -e 25
+video-trimmer -i input.mp4 -s 01:10 -e 02:25
 # or interactively (choose file via fuzzy finder)
-video-trimmer -s 00:00:10 -e 00:00:25
+video-trimmer -s 1:10 -e 2:25
 ```
 
 If you omit `-o/--output`, the output name defaults to `name_trim_{start}-{end}{ext}`.
