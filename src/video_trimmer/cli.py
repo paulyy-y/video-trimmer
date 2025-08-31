@@ -4,6 +4,7 @@ import subprocess
 from pathlib import Path
 
 from .core import trim_video
+from .uploader import upload_to_cloudflare_stream, CloudflareStreamError
 
 __all__ = ["main", "list_video_files"]
 
@@ -75,6 +76,14 @@ def main():
         action="store_true",
         help="Re-encode the video for frame-accurate trimming.",
     )
+    parser.add_argument(
+        "--upload-stream",
+        action="store_true",
+        help=(
+            "After trimming, upload the result to Cloudflare Stream using env vars"
+            " CLOUDFLARE_ACCOUNT_ID and CLOUDFLARE_STREAM_API_TOKEN."
+        ),
+    )
 
     args = parser.parse_args()
 
@@ -137,6 +146,26 @@ def main():
             reencode=args.reencode,
         )
         print(f"Successfully trimmed video to {output_file}")
+
+        if args.upload_stream:
+            print("Uploading to Cloudflare Stream...")
+            try:
+                payload = upload_to_cloudflare_stream(
+                    file_path=output_file,
+                    name=Path(output_file).name,
+                )
+                # Try to print a helpful identifier
+                uid = None
+                if isinstance(payload, dict):
+                    result = payload.get("result")
+                    if isinstance(result, dict):
+                        uid = result.get("uid") or result.get("id")
+                if uid:
+                    print(f"Upload complete. UID: {uid}")
+                else:
+                    print("Upload complete.")
+            except CloudflareStreamError as ue:
+                print(f"Upload failed: {ue}")
     except FileNotFoundError:
         print(f"Error: Input file not found at {input_path}")
     except (ValueError, subprocess.CalledProcessError) as e:
